@@ -1,0 +1,45 @@
+create table if not exists Address(Id SERIAL primary key,
+                                   Street varchar(255),
+                                   ZIP int,
+                                   City varchar(100),
+                                   Country varchar(100));
+
+create table if not exists Hospital (Id SERIAL primary key, 
+                                     HospitalName varchar, 
+                                     Address_Id int,
+                                    constraint fk_Address
+                                    foreign key (Address_Id) references Address(Id));
+                                    
+create table if not exists HospitalWard (Id SERIAL primary key,
+                                         WardName varchar,
+                                         Hospital_Id int,
+                                         constraint fk_Hospital 
+                                         foreign key(Hospital_Id) references Hospital(Id));
+                                        
+create table if not exists Employee (Id SERIAL primary key, 
+                                  FirstName varchar(255), 
+                                  LastName varchar(255),
+                                  HospitalWard_Id int,
+                                  Address_Id int,
+                                  constraint fk_HospitalWard
+                                  foreign key(Id) references HospitalWard(Id),
+                                  constraint fk_Address
+                                  foreign key(Id) references Address(Id));
+                                  
+create table if not exists Contract (Employee_Id SERIAL unique not null,
+                                     ContractType varchar(50),
+                                     constraint fk_Contract_Employee
+                                     foreign key (Employee_Id) references Employee(Id));
+                                     
+create table if not exists Visitor (Id SERIAL primary key,
+                                    FirstName varchar(255),
+                                    LastName varchar(255));
+                                    
+create table if not exists Visits (Id SERIAL primary key,
+                                   Visitor_Id int,
+                                   HospitalWard_Id int,
+                                   DateOfVisit timestamp,
+                                   constraint fk_Visitor
+                                   foreign key (Visitor_Id) references Visitor(Id),
+                                   constraint fk_HospitalWard
+                                   foreign key (HospitalWard_Id) references HospitalWard(Id))
